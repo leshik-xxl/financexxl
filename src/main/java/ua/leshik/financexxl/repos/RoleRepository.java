@@ -8,6 +8,6 @@ import ua.leshik.financexxl.model.Role;
 import java.util.Optional;
 
 @Repository
-public interface RoleRepos extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByName(ERole name);
 }

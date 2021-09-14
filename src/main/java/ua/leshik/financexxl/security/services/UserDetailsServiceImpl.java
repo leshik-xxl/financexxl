@@ -7,12 +7,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.leshik.financexxl.model.User;
-import ua.leshik.financexxl.repos.UserRepos;
+import ua.leshik.financexxl.repos.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    UserRepos userRepository;
+    UserRepository userRepository;
 
     @Override
     @Transactional
