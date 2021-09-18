@@ -1,25 +1,44 @@
 package ua.leshik.financexxl.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ua.leshik.financexxl.model.Role;
 import ua.leshik.financexxl.model.User;
 
-import java.util.Collection;
-import java.util.Collections;
+import javax.persistence.Id;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Data
 public class CustomUserDetails implements UserDetails {
 
+    private Integer id;
     private String login;
+    @JsonIgnore
     private String password;
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
+    public CustomUserDetails(Integer id,String login, String password, Collection<? extends GrantedAuthority> grantedAuthorities) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.grantedAuthorities = grantedAuthorities;
+    }
+
     public static CustomUserDetails fromUserToCustomUserDetails(User user) {
-        CustomUserDetails c = new CustomUserDetails();
-        c.login = user.getLogin();
-        c.password = user.getPassword();
-        c.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName()));
-        return c;
+        List<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
+                .collect(Collectors.toList());
+
+        return new CustomUserDetails(
+                user.getId(),
+                user.getLogin(),
+                user.getPassword(),
+                authorities);
+
     }
 
     @Override
@@ -55,5 +74,18 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomUserDetails that = (CustomUserDetails) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, login, password, grantedAuthorities);
     }
 }

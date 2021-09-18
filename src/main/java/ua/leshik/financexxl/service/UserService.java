@@ -15,9 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -30,11 +28,12 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User saveUser(User userEntity) {
-        Role userRole = roleRepository.findByName("ROLE_USER");
-        userEntity.setRole(userRole);
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-        return userEntityRepository.save(userEntity);
+    public User saveUser(User user) {
+        Set<Role> userRole = new HashSet<>();
+        userRole.add(roleRepository.findByName(ERole.ROLE_USER));
+        user.setRole(userRole);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userEntityRepository.save(user);
     }
 
     public User findByLogin(String login) {

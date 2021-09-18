@@ -1,8 +1,10 @@
 package ua.leshik.financexxl.model;
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "role_table")
@@ -13,6 +15,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private ERole name;
+
 }
